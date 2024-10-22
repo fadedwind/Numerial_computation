@@ -1,0 +1,36 @@
+function newton_raphson()
+    % 获取用户输入的非线性方程
+    equation = input('Enter the equation (e.g., exp(x) - 2): ', 's');
+    f = str2func(['@(x) ' equation]);
+
+    % 获取用户输入的初始猜测值
+    x0 = input('Enter initial guess: ');
+
+    % 设置最大迭代次数和容差
+    max_iter = 1000;
+    tolerance = 1e-6;
+
+    % 牛顿法迭代
+    x = x0;
+    for iter = 1:max_iter
+        fx = f(x);
+        dfx = derivative(f, x);
+        if abs(dfx) < tolerance
+            fprintf('Derivative too small\n');
+            return;
+        end
+        x_new = x - fx / dfx;
+        if abs(x_new - x) < tolerance
+            fprintf('Root found: x = %.10f\n', x_new);
+            return;
+        end
+        x = x_new;
+    end
+    fprintf('Maximum iterations reached\n');
+end
+
+function dfx = derivative(f, x)
+    % 使用中心差分法计算导数
+    h = 1e-8;
+    dfx = (f(x + h) - f(x - h)) / (2 * h);
+end
